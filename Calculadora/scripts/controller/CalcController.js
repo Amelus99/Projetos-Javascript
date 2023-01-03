@@ -138,6 +138,8 @@ class CalcController {
 
     }
 
+    // *A partir daqui é Data e Hora*
+
     setDisplayDateTime(){
 
         this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
@@ -196,5 +198,7 @@ class CalcController {
         this._currentDate = value;
 
     }
+
+    // *Fim Data e Hora*
 
 }
