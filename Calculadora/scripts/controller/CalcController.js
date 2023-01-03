@@ -3,19 +3,23 @@ class CalcController {
     constructor(){
 
         this._operation = [];
+        
+        // Date and Time
         this._locale = 'pt-BR';
         this._displayCalcEl = document.querySelector("#display");
         this._dateEl = document.querySelector("#data");
         this._timeEl = document.querySelector("#hora");
         this._currentDate;
+
         this.initialize();
+
         this.initButtonsEvents();
 
-    }
+    };
 
     initialize(){
 
-        this.setDisplayDateTime()
+        this.setDisplayDateTime();
 
         setInterval(()=>{
 
@@ -23,7 +27,7 @@ class CalcController {
 
         }, 1000);
 
-    }
+    };
 
     addEventListenerAll(element, events, fn){
 
@@ -31,35 +35,86 @@ class CalcController {
 
             element.addEventListener(event, fn, false);
 
-        })
+        });
     
-    }
+    };
 
     clearAll(){
 
         this._operation = [];
 
-    }
+    };
 
     clearEntry(){
 
         this._operation.pop();
 
+    };
+
+    getLastOperation(){
+        // Verify the last digit used
+
+        return this._operation[this._operation.length-1];
+
+    };
+
+    setLastOperation(value){
+        // Swap last number insertion with his concatenation
+
+        this._operation[this._operation.length-1] = value
+    }
+
+    isOperator(value){
+        // Search the operator value
+
+        return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
+
     }
 
     addOperation(value){
 
-        this._operation.push(value);
+        if (isNaN(this.getLastOperation())){
+            // True means string
+
+            if (this.isOperator(value)){
+                // Change operator
+
+                this.setLastOperation(value);
+
+            } else if (isNaN(value)){                
+                // Something else ponto or igual
+
+                console.log(value);
+
+            }else{
+                
+                this._operation.push(value);
+            
+            }
+
+        } else{
+            // False means number
+
+            let newValue = this.getLastOperation().toString() + value.toString();
+            this.setLastOperation(parseInt(newValue));
+        };
 
         console.log(this._operation);
 
-    }
+    };
 
     setError(){
+        // Shows a error message on screen
 
         this.displayCalc = "Error";
         
-    }
+    };
+    setMizeravi(){
+        // References
+
+        this.displayCalc = "Acerto";
+        
+    };
 
     execBtn(value){
 
@@ -74,23 +129,31 @@ class CalcController {
                 break;
 
             case 'soma':
-                
+                this.addOperation('+')
                 break;
 
             case 'subtracao':
-                
+                this.addOperation('-')
                 break;
 
             case 'divisao':
-                
+                this.addOperation('/')
+                break;
+            
+            case 'multiplicacao':
+                this.addOperation('*')
                 break;
 
             case 'porcento':
-                
+                this.addOperation('%')
                 break;
 
             case 'igual':
                 
+                break;
+
+            case 'ponto':
+                this.addOperation('.')
                 break;
 
             case '0':
@@ -103,6 +166,7 @@ class CalcController {
             case '7':
             case '8':
             case '9':
+                // Transforms number values from String to Int
                 this.addOperation(parseInt(value));
                 break;
 
@@ -110,9 +174,9 @@ class CalcController {
                 this.setError();
                 break;
 
-        }
+        };
 
-    }
+    };
 
     initButtonsEvents(){
 
@@ -126,19 +190,19 @@ class CalcController {
 
                 this.execBtn(textBtn);
 
-            })
+            });
 
             this.addEventListenerAll(btn, "mouseover mouseup mousedown", e => {
 
                 btn.style.cursor = "pointer";
 
-            })
+            });
 
-        })
+        });
 
-    }
+    };
 
-    // *A partir daqui é Data e Hora*
+    // *Date and Time*
 
     setDisplayDateTime(){
 
@@ -149,56 +213,56 @@ class CalcController {
         });
         this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
 
-    }
+    };
 
     get displayTime(){
 
         return this._timeEl.innerHTML;
 
-    }
+    };
 
     set displayTime(value){
 
         return this._timeEl.innerHTML = value;
 
-    }
+    };
 
     get displayDate(){
 
         return this._dateEl.innerHTML;
 
-    }
+    };
 
     set displayDate(value){
 
         return this._dateEl.innerHTML = value;
 
-    }
+    };
 
     get displayCalc(){
 
         return this._displayCalcEl.innerHTML;
 
-    }
+    };
 
     set displayCalc(value){
 
         this._displayCalcEl.innerHTML = value;
 
-    }
+    };
 
     get currentDate(){
 
         return new Date();
 
-    }
+    };
 
     set currentDate(value){
 
         this._currentDate = value;
 
-    }
+    };
 
-    // *Fim Data e Hora*
+    // *End Date and Time*
 
 }
