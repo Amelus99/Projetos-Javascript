@@ -61,15 +61,58 @@ class CalcController {
     setLastOperation(value){
         // Swap last number insertion with his concatenation
 
-        this._operation[this._operation.length-1] = value
-    }
+        this._operation[this._operation.length-1] = value;
+    };
 
     isOperator(value){
         // Search the operator value
 
         return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
 
-    }
+    };
+
+    pushOperation(value){
+        // Inserts the new operation on the Array
+
+        this._operation.push(value);
+
+        if(this._operation.length > 3){
+
+            this.calc();
+
+        };
+
+    };
+
+    calc(){
+
+        let last = this._operation.pop();
+
+        let result = eval(this._operation.join(""));
+
+        this._operation = [result, last];
+
+        this.setLastNumberToDisplay();
+
+    };
+
+    setLastNumberToDisplay(){
+         
+        let lastNumber;
+    
+        for (let i = this._operation.length-1; i >= 0; i--){
+            // Searches for the last number
+            if(!this.isOperator(this._operation[i])){
+                // If it's not a operator set the variable
+
+                lastNumber = this._operation[i]
+                break;
+            };
+
+        };
+        this.displayCalc = lastNumber;
+
+    };
 
     addOperation(value){
 
@@ -84,22 +127,37 @@ class CalcController {
             } else if (isNaN(value)){                
                 // Something else ponto or igual
 
-                console.log(value);
+                console.log('Something', value);
 
             }else{
                 
-                this._operation.push(value);
+                this.pushOperation(value);
+
+                this.setLastNumberToDisplay();
             
-            }
+            };
 
         } else{
             // False means number
 
-            let newValue = this.getLastOperation().toString() + value.toString();
-            this.setLastOperation(parseInt(newValue));
-        };
+            if (this.isOperator(value)){
+                // Verify if the value is an operator
+                
+                this.pushOperation(value);
 
-        console.log(this._operation);
+            } else {
+
+                let newValue = this.getLastOperation().toString() + value.toString();
+                this.setLastOperation(parseInt(newValue));
+
+                // Update display
+
+                this.setLastNumberToDisplay();
+
+            };
+
+            
+        };
 
     };
 
