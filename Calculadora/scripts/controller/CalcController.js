@@ -2,6 +2,10 @@ class CalcController {
 
     constructor(){
 
+        //Audio
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
+
         //Calcs
         this._lastOperator = '';
         this._lastNumber = '';
@@ -17,9 +21,13 @@ class CalcController {
         this.initialize();
 
         this.initButtonsEvents();
+
+        //Initialize Keyboard digits
         this.initKeyboard();
 
     };
+
+    // *Functions*
 
     pasteFromClipboard(){
         document.addEventListener('paste', e=>{
@@ -50,10 +58,31 @@ class CalcController {
         this.setLastNumberToDisplay();
         this.pasteFromClipboard();
 
+        document.querySelectorAll('.btn-ac').forEach(btn=>{
+            btn.addEventListener('dblclick', e=>{
+                this.toggleAudio();
+            });
+        });
+
+    };
+    
+    toggleAudio(){
+       this._audioOnOff = !this._audioOnOff;
+    };
+
+    playAudio(){
+
+        if( this._audioOnOff){
+            this._audio.currentTime = 0;
+            this._audio.play();
+        };
+
     };
 
     initKeyboard(){
         document.addEventListener('keyup', e=>{
+
+            this.playAudio();
 
             switch (e.key) {
 
@@ -167,8 +196,14 @@ class CalcController {
     };
 
     getResult(){
-
+        try{
         return eval(this._operation.join(""));
+        }catch(e){
+            setTimeout(()=>{
+                this.setMizeravi();
+            }, 1);
+            
+        };
     };
 
     calc(){
@@ -294,7 +329,7 @@ class CalcController {
     setMizeravi(){
         // References
 
-        this.displayCalc = "Acerto";
+        this.displayCalc = "Acertô";
         
     };
 
@@ -313,6 +348,8 @@ class CalcController {
     };
 
     execBtn(value){
+
+        this.playAudio();
 
         switch (value) {
 
@@ -398,7 +435,9 @@ class CalcController {
 
     };
 
-    // *Date and Time*
+    // *End*
+
+    // *Getters and Setters - Display, Date and Time*
 
     setDisplayDateTime(){
 
@@ -443,6 +482,11 @@ class CalcController {
 
     set displayCalc(value){
 
+        if(value.toString().length > 10){
+            this.setError();
+            return false;
+        };
+
         this._displayCalcEl.innerHTML = value;
 
     };
@@ -459,6 +503,6 @@ class CalcController {
 
     };
 
-    // *End Date and Time*
+    // *End*
 
 }
