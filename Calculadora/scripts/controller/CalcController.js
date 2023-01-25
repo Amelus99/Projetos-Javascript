@@ -504,5 +504,4 @@ class CalcController {
     };
 
     // *End*
-
-}
+};
